@@ -8,8 +8,8 @@ const eleventyNavigation = {
 
 Originally, I hadn’t planned on starting a blog. I was content with just my <a href="https://writings.howsoonisnow.org/digitalgarden/" target="_blank">digital garden</a>, but I realised I didn't want to mix long-form writing with the garden's more chaotic nature. I also underestimated how much I would eventually want a separate space where I could really ramble at length.
 
-<figure style="text-align:center;">
-	<img src="/img/mondo.jpg" eleventy:ignore style="max-width:400px;">
+<figure class="mondo">
+	<img src="/img/mondo.jpg" eleventy:ignore>
 	<figcaption>Mondo 2000 - Issue 15 (1996)</figcaption>
 </figure>
 

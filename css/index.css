@@ -689,3 +689,9 @@ pre[class*="language-diff-"] {
 		--color-message-box: #082840;
 	}
 }
+
+.mondo {
+  margin: auto;
+  max-width: 400px;
+  height: auto;
+}
