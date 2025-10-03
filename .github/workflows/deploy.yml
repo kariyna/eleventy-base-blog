@@ -35,7 +35,7 @@ jobs:
         run: |
           rm -rf ../howsoonisnow/public/writings/blog
           mkdir -p ../howsoonisnow/public
-          mv public ../howsoonisnow/public/writings/blog
+          mv _site ../howsoonisnow/public/writings/blog
 
       - name: Check for HTML changes
         id: html_changed
