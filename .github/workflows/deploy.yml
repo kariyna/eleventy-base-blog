@@ -1,0 +1,72 @@
+name: Build and Deploy Quartz to HowSoonIsNow Repo
+
+on:
+  push:
+    branches:
+      - v4
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Quartz repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Clone howsoonisnow repo
+        env:
+          REPO_URL: https://x-access-token:${{ secrets.HOWSOONISNOW_TOKEN }}@github.com/kariyna/howsoonisnow.git
+        run: |
+          git clone $REPO_URL ../howsoonisnow
+
+      - name: Build Quartz
+        run: npx quartz build
+
+      - name: Move built files to howsoonisnow/public/writings/blog
+        run: |
+          rm -rf ../howsoonisnow/public/writings/blog
+          mkdir -p ../howsoonisnow/public
+          mv public ../howsoonisnow/public/writings/blog
+
+      - name: Check for HTML changes
+        id: html_changed
+        run: |
+          # Use github event variables for accurate diff range
+          echo "Checking HTML changes between ${{ github.event.before }} and ${{ github.sha }}"
+
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.html$'; then
+            echo "html_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "html_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate RSS and sitemap for all HTML files in howsoonisnow/public
+        if: steps.html_changed.outputs.html_changed == 'true'
+        run: node apps/generate-feeds.js ../howsoonisnow/public ../howsoonisnow
+
+      - name: Commit and push to howsoonisnow repo
+        env:
+          COMMIT_EMAIL: github-actions[bot]@users.noreply.github.com
+          COMMIT_NAME: github-actions[bot]
+        run: |
+          cd ../howsoonisnow
+          git config user.name "$COMMIT_NAME"
+          git config user.email "$COMMIT_EMAIL"
+
+          git add public/writings/blog
+          git add public/sitemap.xml public/rss-updates.xml
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update blog and feeds from Quartz build"
+            git push origin main # Change branch if needed
+          fi
