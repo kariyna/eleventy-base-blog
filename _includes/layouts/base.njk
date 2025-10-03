@@ -6,10 +6,9 @@
 		<title>{{ title or metadata.title }}</title>
 		<meta name="description" content="{{ description or metadata.description }}">
 		<link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="{{ metadata.title }}">
-
-		{#- Uncomment this if you’d like folks to know that you used Eleventy to build your site!  #}
-		{#- <meta name="generator" content="{{ eleventy.generator }}"> #}
-
+		<meta name="generator" content="{{ eleventy.generator }}">
+    <link rel="icon" type="image/x-icon" href="/img/favicon.gif">
+    <script src="/js/external.js" defer></script>
 		{#-
 		Plain-text bundles are provided via the `eleventy-plugin-bundle` plugin:
 		1. CSS:
@@ -42,17 +41,29 @@
 	<body>
 		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
 
+		<div class="knight" title="Blog">
+			<img src="/img/B.png" class="b" eleventy:ignore><img src="/img/L.png" class="l" eleventy:ignore><img src="/img/O.gif" class="o" eleventy:ignore><img src="/img/G.png" class="g" eleventy:ignore>
+		</div>
+		<div class="queen">
+			@ howsoonisnow.org
+		</div>
+	<div class="filter">
 		<header>
-			<a href="/" class="home-link">{{ metadata.title }}</a>
-
-			{#- Read more about `eleventy-navigation` at https://www.11ty.dev/docs/plugins/navigation/ #}
 			<nav>
 				<h2 class="visually-hidden">Top level navigation menu</h2>
-				<ul class="nav">
-				{%- for entry in collections.all | eleventyNavigation %}
-					<li class="nav-item"><a href="{{ entry.url }}"{% if entry.url == page.url %} aria-current="page"{% endif %}>{{ entry.title }}</a></li>
-				{%- endfor %}
-				</ul>
+<ul class="nav">
+  {%- for entry in collections.all | eleventyNavigation %}
+    <li class="nav-item">
+      <a href="{{ entry.url }}"{% if entry.url == page.url %} aria-current="page"{% endif %}>
+        <img src="/icons/{{ entry.title | slugify }}.gif" alt="" class="nav-icon" eleventy:ignore>
+        {{ entry.title }}
+      </a>
+    </li>
+  {%- endfor %}
+    <li class="nav-item">
+      <a href="https://howsoonisnow.org/" target="_blank"><img src="/icons/hsin.gif" eleventy:ignore class="nav-icon" alt=""> hsin</a>
+    </li>
+</ul>
 			</nav>
 		</header>
 
@@ -63,12 +74,232 @@
 		</main>
 
 		<footer>
-			<p>
-				<em>Built with <a href="https://www.11ty.dev/">{{ eleventy.generator }}</a></em>
-			</p>
+				<a href="https://copyheart.org/manifesto/" target="_blank">♡</a> 2024-2025 how soon is now?<br>
+				<a href="https://howsoonisnow.org/site/credits/#blog">credits</a>
 		</footer>
+	</div>
 
-		<!-- This page `{{ page.url }}` was built on {% currentBuildDate %} -->
 		<script type="module" src="{% getBundleFileUrl "js" %}"></script>
+<script type="module">
+document.addEventListener("DOMContentLoaded", () => {
+  const main = document.querySelector("#main");
+  const nav = document.querySelector("nav");
+
+  // -----------------------------
+  // SPA Navigation
+  // -----------------------------
+  async function loadPage(url, addToHistory = true) {
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, "text/html");
+
+      const newMain = doc.querySelector("#main");
+      if (!newMain) {
+        window.location.href = url;
+        return;
+      }
+
+      main.innerHTML = newMain.innerHTML;
+
+      const newNav = doc.querySelector("nav");
+      if (newNav && nav) {
+        nav.innerHTML = newNav.innerHTML;
+      }
+
+      document.title = doc.title;
+
+      if (addToHistory) history.pushState(null, "", url);
+
+      // Initialize comments after page content is replaced
+      initComments();
+    } catch (err) {
+      console.error("Failed to load page:", err);
+      window.location.href = url;
+    }
+  }
+
+  window.addEventListener("popstate", () => {
+    loadPage(location.pathname, false);
+  });
+
+  document.body.addEventListener("click", e => {
+    const a = e.target.closest("a");
+    if (!a) return;
+
+    const href = a.getAttribute("href");
+    if (!href) return;
+
+    if (
+      !href.startsWith("/") ||
+      a.target === "_blank" ||
+      href.startsWith("#") ||
+      href.endsWith(".xml") ||
+      href.endsWith(".txt") ||
+      href.endsWith(".json") ||
+      href.endsWith(".rss")
+    ) return;
+
+    e.preventDefault();
+    loadPage(href);
+  });
+
+  // -----------------------------
+  // Comment System
+  // -----------------------------
+  window.initComments = function() {
+    const s_formId    = '1FAIpQLSc2-pIJ3XAgwh3uaX0BdHtnOWuj_2Cf9-oXQzEmxlRLRGFn3A';
+    const s_sheetId   = '1ZKbdPHXSFoLU64SpE02RKK1_yURg1Ei7Y8QsGx_nxFI';
+
+    const s_nameId    = '738689966';
+    const s_websiteId = '1108967994';
+    const s_textId    = '1925557194';
+    const s_pageId    = '228956633';
+    const s_replyId   = '1980001963';
+
+    const c_container = document.getElementById('c_container');
+    const c_form      = document.getElementById('c_form');
+    const c_hiddenIframe = document.getElementById('c_hiddenIframe');
+
+    if (!c_container || !c_form) return;
+
+    let currentReplyTarget = null;
+    let originalReplyButton = null;
+
+    function moveFormToBottom() {
+      if (currentReplyTarget && originalReplyButton) {
+        originalReplyButton.innerText = 'Reply';
+      }
+      c_container.appendChild(c_form);
+      currentReplyTarget = null;
+      originalReplyButton = null;
+      document.getElementById('entry.' + s_replyId).value = '';
+    }
+
+    function fixFrame() {
+      c_form.reset();
+      document.getElementById('entry.' + s_pageId).value = window.location.pathname;
+      document.getElementById('entry.' + s_replyId).value = '';
+      c_hiddenIframe.srcdoc = '';
+      if (currentReplyTarget) moveFormToBottom();
+      getComments();
+    }
+
+    function getComments() {
+      const url = `https://docs.google.com/spreadsheets/d/${s_sheetId}/gviz/tq?`;
+      fetch(url)
+        .then(r => r.text())
+        .then(txt => {
+          const json = JSON.parse(txt.substr(47).slice(0, -2));
+          const rows = json.table.rows;
+          const cols = json.table.cols.map(c => c.label);
+
+          let comments = [];
+
+          rows.forEach(row => {
+            let data = {};
+            cols.forEach((col, i) => data[col] = row.c[i] ? row.c[i].v : '');
+            if (data.Page === window.location.pathname) {
+              data.id = data.Timestamp || Math.random().toString(36).substr(2, 9);
+              data.children = [];
+              comments.push(data);
+            }
+          });
+
+          let lookup = {};
+          comments.forEach(c => lookup[c.id] = c);
+          let roots = [];
+
+          comments.forEach(c => {
+            if (c.Reply && lookup[c.Reply]) {
+              lookup[c.Reply].children.push(c);
+            } else {
+              roots.push(c);
+            }
+          });
+
+          c_container.innerHTML = '';
+          if (roots.length === 0) {
+            c_container.innerText = 'No comments yet.';
+          } else {
+            roots.reverse().forEach(c => renderComment(c, c_container));
+          }
+
+          if (!currentReplyTarget) c_container.appendChild(c_form);
+        });
+    }
+
+    function renderComment(data, container) {
+      const comment = document.createElement('div');
+      comment.className = 'comment-item';
+
+      const name = document.createElement('h3');
+      if (data.Website) {
+        const link = document.createElement('a');
+        link.innerText = data.Name;
+        link.href = data.Website.trim();
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        name.appendChild(link);
+      } else {
+        name.innerText = data.Name || 'Anonymous';
+      }
+      comment.appendChild(name);
+
+      const text = document.createElement('p');
+      text.innerText = data.Text;
+      comment.appendChild(text);
+
+      const replyBtn = document.createElement('button');
+      replyBtn.innerText = 'Reply';
+      replyBtn.onclick = () => {
+        if (currentReplyTarget === comment) {
+          moveFormToBottom();
+          return;
+        }
+        if (currentReplyTarget && originalReplyButton) {
+          originalReplyButton.innerText = 'Reply';
+        }
+        currentReplyTarget = comment;
+        originalReplyButton = replyBtn;
+        replyBtn.innerText = 'Cancel';
+        document.getElementById('entry.' + s_replyId).value = data.id;
+        comment.appendChild(c_form);
+        document.getElementById('entry.' + s_textId).focus();
+        text.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+      comment.appendChild(replyBtn);
+
+      if (data.children.length > 0) {
+        const repliesDiv = document.createElement('div');
+        repliesDiv.className = 'replies';
+        data.children.reverse().forEach(child => renderComment(child, repliesDiv));
+        comment.appendChild(repliesDiv);
+      }
+
+      container.appendChild(comment);
+    }
+
+    c_form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(c_form);
+      fetch(`https://docs.google.com/forms/d/e/${s_formId}/formResponse`, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      }).then(() => fixFrame());
+    });
+
+    // Initialize for current page
+    document.getElementById('entry.' + s_pageId).value = window.location.pathname;
+    getComments();
+  };
+
+  // Initialize comments on first load
+  initComments();
+});
+</script>
 	</body>
 </html>

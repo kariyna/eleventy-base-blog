@@ -66,7 +66,7 @@ export default async function(eleventyConfig) {
 		stylesheet: "pretty-atom-feed.xsl",
 		templateData: {
 			eleventyNavigation: {
-				key: "Feed",
+				key: "RSS",
 				order: 4
 			}
 		},
@@ -76,11 +76,11 @@ export default async function(eleventyConfig) {
 		},
 		metadata: {
 			language: "en",
-			title: "Blog Title",
-			subtitle: "This is a longer description about your blog.",
-			base: "https://example.com/",
+			title: "Blog @ howsoonisnow.org",
+			subtitle: "Fragments of thought and memory gathered in a place where the present lingers just a little longer. I write about whatever inspires me; there is no theme or particularity.",
+			base: "https://howsoonisnow.org/",
 			author: {
-				name: "Your Name"
+				name: "Karina"
 			}
 		}
 	});
@@ -152,6 +152,8 @@ export const config = {
 		data: "../_data",          // default: "_data" (`input` relative)
 		output: "_site"
 	},
+
+	pathPrefix: "/writings/blog"
 
 	// -----------------------------------------------------------------
 	// Optional items:

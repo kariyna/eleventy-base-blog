@@ -1,8 +1,55 @@
 <ol reversed class="postlist" style="--postlist-index: {{ (postslistCounter or postslist.length) + 1 }}">
 {%- for post in postslist | reverse %}
-	<li class="postlist-item{% if post.url == url %} postlist-item-active{% endif %}">
-		<a href="{{ post.url }}" class="postlist-link">{% if post.data.title %}{{ post.data.title }}{% else %}<code>{{ post.url }}</code>{% endif %}</a>
-		<time class="postlist-date" datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate("LLLL yyyy") }}</time>
-	</li>
+	{% if loop.first %}
+		<li class="postlist-item featured-post">
+			<a href="{{ post.url }}" class="postlist-link-card">
+				{% if post.data.image %}
+					<div class="postlist-preview-img">
+						<img src="{{ post.data.image }}" alt="{{ post.data.title }}" eleventy:ignore>
+					</div>
+				{% endif %}
+				<div class="postlist-preview-content">
+					<h2 class="postlist-preview-title">
+				{% if post.data.icon %}
+					<img 
+						src="/icons/{{ post.data.icon }}" 
+						alt="" 
+						class="post-icon" 
+						eleventy:ignore
+					>
+				{% endif %}
+					{{ post.data.title }}
+					</h2>
+					{% if post.data.description %}
+						<p class="postlist-preview-text">{{ post.data.description }}</p>
+					{% endif %}
+					<time class="postlist-date" datetime="{{ post.date | htmlDateString }}">
+						{{ post.date | readableDate("LLLL yyyy") }}
+					</time>
+				</div>
+			</a>
+		</li>
+	{% else %}
+		<li class="postlist-item{% if post.url == url %} postlist-item-active{% endif %}">
+			<a href="{{ post.url }}" class="postlist-link">
+				{% if post.data.icon %}
+					<img 
+						src="/icons/{{ post.data.icon }}" 
+						alt="" 
+						class="post-icon" 
+						eleventy:ignore
+					>
+				{% endif %}
+				{% if post.data.title %}
+					{{ post.data.title }}
+				{% else %}
+					<code>{{ post.url }}</code>
+				{% endif %}
+			</a>
+			<time class="postlist-date" datetime="{{ post.date | htmlDateString }}">
+				{{ post.date | readableDate("LLLL yyyy") }}
+			</time>
+		</li>
+	{% endif %}
 {%- endfor %}
 </ol>

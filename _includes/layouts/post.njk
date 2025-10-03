@@ -3,7 +3,6 @@ layout: layouts/base.njk
 ---
 {# Only include the syntax highlighter CSS on blog posts, included with the CSS per-page bundle #}
 <style>{% include "node_modules/prismjs/themes/prism-okaidia.css" %}</style>
-<style>{% include "css/prism-diff.css" %}</style>
 <h1>{{ title }}</h1>
 
 <ul class="post-metadata">
@@ -26,3 +25,17 @@ layout: layouts/base.njk
 </ul>
 {%- endif %}
 {%- endif %}
+
+<h1>Comments</h1>
+<div id="c_container"></div>
+
+<form id="c_form">
+  <input type="text" name="entry.738689966" id="entry.738689966" placeholder="Name" required>
+  <input type="url" name="entry.1108967994" id="entry.1108967994" placeholder="Website (optional)">
+  <textarea name="entry.1925557194" id="entry.1925557194" placeholder="Comment" required></textarea>
+  <input type="hidden" name="entry.228956633" id="entry.228956633">
+  <input type="hidden" name="entry.1980001963" id="entry.1980001963">
+  <button id="c_submitButton" type="submit">Post Comment</button>
+</form>
+
+<iframe name="c_hiddenIframe" id="c_hiddenIframe" style="display:none;"></iframe>

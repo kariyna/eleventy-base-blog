@@ -1,4 +1,4 @@
-name: Build and Deploy Quartz to HowSoonIsNow Repo
+name: Build and Deploy Eleventy to HowSoonIsNow Repo
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Quartz repo
+      - name: Checkout Eleventy repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -28,8 +28,8 @@ jobs:
         run: |
           git clone $REPO_URL ../howsoonisnow
 
-      - name: Build Quartz
-        run: npx quartz build
+      - name: Build Eleventy
+        run: npx @11ty/eleventy
 
       - name: Move built files to howsoonisnow/public/writings/blog
         run: |
@@ -67,6 +67,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update blog and feeds from Quartz build"
+            git commit -m "Update blog and feeds from Eleventy build"
             git push origin main # Change branch if needed
           fi
