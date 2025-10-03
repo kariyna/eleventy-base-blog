@@ -3,7 +3,7 @@ name: Build and Deploy Eleventy to HowSoonIsNow Repo
 on:
   push:
     branches:
-      - v4
+      - main
 
 jobs:
   build-and-push:
