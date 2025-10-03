@@ -5,10 +5,23 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{{ title or metadata.title }}</title>
 		<meta name="description" content="{{ description or metadata.description }}">
+	  <meta name="keywords" content="personal website, blogging, shrines, writings, tutorials, scrapbooking, creative outlet, old web, musings, keepsakes">
+	  <meta name="author" content="Karina">
+  	<meta property="og:title" content="How soon is now?">
+    <meta property="og:description" content="Fragments of thought and memory gathered in a place where the present lingers just a little longer. I write about whatever inspires me; there is no theme or particularity.">
+    <meta property="og:image" content="https://neocities.org/site_screenshots/23/85/howsoonisnow/index.html.540x405.webp">
 		<link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="{{ metadata.title }}">
 		<meta name="generator" content="{{ eleventy.generator }}">
     <link rel="icon" type="image/x-icon" href="/img/favicon.gif">
     <script src="/js/external.js" defer></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6H3CF09ST7"></script>
+	<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6H3CF09ST7');
+	</script>
 		{#-
 		Plain-text bundles are provided via the `eleventy-plugin-bundle` plugin:
 		1. CSS:
